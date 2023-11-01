@@ -409,7 +409,7 @@ class NetworkTopology{
     
 }
 
-public class dynamic {
+public class ls {
 
     public static void main(String[] args) {
         
@@ -461,7 +461,8 @@ public class dynamic {
         fw.write("set ns [new Simulator]\n");
         fw.write("$ns rtproto DV\n");
         fw.write("\n");
-        fw.write("set tf [open out_ls.tr w]\n$ns trace-all $tf\nset nf [open out_ls.nam w]\n$ns namtrace-all $nf");
+        fw.write("set tf [open out_ls.tr w]\n$ns trace-all $tf\nset nf [open out_ls.nam w]\n$ns namtrace-all $nf\n");
+        fw.write("set xf [open out_ls.xg w]");
         fw.write("\n");    
        
         
@@ -521,7 +522,15 @@ public class dynamic {
                         System.out.println("The router will follow the path: ");
                         networkTopology.simulateRouter(src,dest);
                         fw.write("\nproc finish {} {\n");
-                        fw.write("global ns nf tf\n$ns flush-trace\nclose $nf\nclose $tf\nexec nam out_ls.nam &\nexec awk -f analyse.awk out_ls.tr &\nexit 0\n}\n");
+                        fw.write("global ns nf tf xf\n$ns flush-trace\nclose $nf\nclose $tf\nexec nam out_ls.nam &\nexec awk -f analyse.awk out_ls.tr &\nexit 0\n}\n");
+                        
+                        
+                        fw.write("proc record {} {\n");
+                        fw.write("global sink2 xf\nset ns [Simulator instance]\n");
+                        fw.write("set time 0.5\nset bw [$sink2 set bytes_]\nset now [$ns now]\n");
+                        fw.write("puts $xf \"$now [expr $bw/$time*8/1000000]\"\n");
+                        fw.write("$sink2 set bytes_ 0\n$ns at [expr $now+$time] \"record\"\n}\n\n");
+                        
                         
                         fw.write("$ns at 1.0 \"$node("+src+") label sender\"\n");
                         fw.write("$ns at 5.0 \"$node("+src+") label \\\"\\\"\"\n");
@@ -533,7 +542,7 @@ public class dynamic {
 
                         fw.write("for {set i 0} {$i < $val(nn) } { incr i } {\n");
                         fw.write("  $ns at 6.0 \"$node($i) reset\";\n}\n");
-
+ 			            fw.write("$ns at 0.0 \"record\"");
                         fw.write("\n$ns at 1.0 \"$traffic_ftp2 start\"\n$ns at 3.0 \"$traffic_ftp2 stop\"\n");
                         fw.write("$ns at 5.0 \"finish\"\n");
                         fw.close();
