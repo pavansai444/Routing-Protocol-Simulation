@@ -23,8 +23,7 @@ DSR Protocol - contributed by Taviti Venkata Manikanta
  
 
 We have implemented Java code to execute the algorithms associated with both distance vector and link state protocols. This code enables us to derive the routing tables for each router. Subsequently, we generate a TCL (Tool Command Language) script, which serves as the basis for simulating these protocols in ns2 simulator. Additionally, we employ an AWK script (a scripting language) to parse the trace file, extracting critical metrics such as throughput, packet delivery ratio, end-to-end delay, as well as the quantities of dropped, received, and transmitted packets. In our analysis, we also utilize the X Graph tool to visually represent the throughput data through graph plotting. 
-
-      Wired Protocols that we have implemented: 
+Wired Protocols that we have implemented: 
 
 Link State routing -contributed by Balaga Pavan Sai and challa vishwanath) 
 
